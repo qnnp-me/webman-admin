@@ -32,6 +32,51 @@ function toggleSearchFormShow()
     $('.top-search-from .toggle-btn a:first').addClass('layui-hide');
 }
 
+// TODO 将来删除
+function compatible()
+{
+    [
+        ['pear-btn-xs', 'layui-btn-xs'],
+        ['pear-btn-sm', 'layui-btn-sm'],
+        ['pear-btn-lg', 'layui-btn-lg'],
+        ['pear-btn', 'layui-btn'],
+    ].forEach(([old_class,new_class]) => {
+        document.querySelectorAll(`.${old_class}:not(.${new_class})`).forEach(item=>{
+            item.classList.add(new_class);
+        });
+    })
+}
+
+// 优化后的兼容性处理
+function optimizedCompatible()
+{
+    // 初始化执行一次
+    compatible();
+
+    // 现代浏览器使用 MutationObserver
+    if ('MutationObserver' in window) {
+        const observer = new MutationObserver(() => compatible());
+        observer.observe(document.body, { childList: true, subtree: true });
+        window.compatibleObserver = observer;
+        return;
+    }
+
+    // 老浏览器使用节流定时器
+    let timer = null;
+    const handler = () => {
+        if (timer) return;
+        timer = setTimeout(() => {
+            compatible();
+            timer = null;
+        }, 1000);
+    };
+
+    document.addEventListener('DOMNodeInserted', handler);
+    window.throttledCompatible = handler;
+}
+
 layui.$(function () {
     toggleSearchFormShow();
+    optimizedCompatible();
 });
+
