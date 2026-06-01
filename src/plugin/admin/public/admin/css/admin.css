@@ -22,6 +22,7 @@ body,
 
 .pear-admin.banner-layout .layui-header .layui-logo {
 	display: inline-block;
+	overflow: hidden;
 }
 
 .pear-admin.banner-layout .layui-side .layui-side-scroll {
@@ -299,6 +300,10 @@ body,
 
 /** 新增兼容 */
 @media screen and (max-width:768px) {
+	.pear-admin.banner-layout .layui-header .layui-layout-left {
+		left: 0px;
+	}
+
 	.collapse {
 		display: none !important;
 	}
